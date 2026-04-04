@@ -1,0 +1,9 @@
+streamlit
+openai
+langchain
+pandas
+python-dotenv
+langchain_openai
+langchain_core
+dotenv
+openpyxl
