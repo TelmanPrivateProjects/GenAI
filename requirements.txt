@@ -1,9 +1,7 @@
-streamlit
-openai
-langchain
-pandas
-python-dotenv
-langchain_openai
-langchain_core
-dotenv
-openpyxl
+# Tested with Python 3.14 and the versions below.
+streamlit>=1.67,<2
+langchain-core>=1.7,<2
+langchain-openai>=1.7,<2
+pandas>=2.2
+openpyxl>=3.1
+python-dotenv>=1.0

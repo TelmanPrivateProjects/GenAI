@@ -1,85 +1,124 @@
-# 💻 DevOps Interview Practice Bot
+# DevOps Interview Practice Bot
 
-This is a modular **Streamlit** application that helps users practice for **DevOps interviews** by asking technical questions, evaluating answers with AI, and providing feedback with a score.
+A **Streamlit** chat app that helps you prepare for **DevOps interviews**. It asks technical questions, evaluates your answers with an LLM (via **LangChain** + **OpenAI**), scores them from 1 to 10, shows a model answer and tracks your progress.
 
----
-
-## 🚀 Features
-
-- Ask randomized DevOps questions filtered by topic and difficulty
-- Get AI-generated feedback and model answers
-- Track your progress (correct answers, total answered, accuracy %)
-- Interactive chat interface using Streamlit
-- Easily extendable with modular structure
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?logo=langchain&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?logo=openai&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
-## 📁 Project Structure
+## Features
+
+- **100 curated questions** across 10 topics: CI/CD, Git, Docker, Kubernetes, IaC, Configuration Management, Monitoring, Logging & Observability, DevSecOps and Cloud Platforms
+- **3 difficulty levels** (Beginner, Intermediate, Advanced) with topic filters
+- **AI evaluation**: score (1–10), constructive feedback, a model answer and a link to the official docs
+- **Follow-up questions** ("What is CD?") are answered without being scored
+- **Progress tracking**: answered, correct (score ≥ 8) and accuracy in the sidebar
+- Streaming responses and a dark theme
+
+---
+
+## How it works
 
 ```
-devops_bot/
-├── main.py                  # Streamlit entry point
-├── ui.py                    # UI components (chat, sidebar)
-├── state.py                 # Session state management
-├── logic.py                 # Core logic for Q&A and evaluation
-├── data_loader.py           # Load prompt and questions from file
-├── constants.py             # Static texts (e.g., welcome message)
-├── requirements.txt         # Python dependencies
-├── prompt.txt               # LLM prompt template
-├── .env                     # Environment variables
-└── data/
-    └── devops_questions_full.xlsx
-└── .streamlit/
-    └── config.toml
+ Sidebar: topic + level ──► generate_question() ──► question saved in session_state
+                                                            │
+ User answer ──► prompt (prompts/interview_coach.txt) ◄─────┘
+                    │
+                    ▼
+        LangChain: prompt | ChatOpenAI | StrOutputParser  (streamed)
+                    │
+                    ▼
+        parse_score() ──► classify_score() ──► sidebar progress
+```
 
 ---
 
-## ⚙️ Setup Instructions
+## Project structure
 
-1. **Create virtual environment and install requirements**
+```
+.
+├── app.py                       # Streamlit entry point
+├── devops_bot/
+│   ├── constants.py             # Paths, model default, thresholds, welcome text
+│   ├── data_loader.py           # Load prompt and question bank (cached)
+│   ├── logic.py                 # Question selection, LLM call, score parsing
+│   ├── state.py                 # Session state management
+│   └── ui.py                    # Sidebar, chat and input handling
+├── prompts/
+│   └── interview_coach.txt      # LLM prompt template
+├── data/
+│   └── devops_questions.xlsx    # Question bank (Question, Topic, Level)
+├── tests/                       # Unit + end-to-end tests (no API key needed)
+├── .streamlit/config.toml       # Theme
+├── .env.example                 # Environment variable template
+├── requirements.txt
+└── requirements-dev.txt
+```
+
+---
+
+## Setup
+
+1. **Create a virtual environment and install the dependencies**
+
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate        # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+2. **Configure your OpenAI key**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Then edit `.env`:
+
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   OPENAI_MODEL=gpt-4o-mini        # optional
+   ```
+
+3. **Run the app**
+
+   ```bash
+   streamlit run app.py
+   ```
+
+> Without an API key the app still starts and shows a warning. Answers return an error message instead of feedback.
+
+---
+
+## Tests
+
+The test suite does not call OpenAI. The LLM is replaced by a fake, so **no API key is needed**.
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pytest
 ```
 
-2. **Set up your `.env` file** with your OpenAI key:
-
-```
-OPENAI_API_KEY=your_openai_api_key_here
-```
-
-3. **Run the Streamlit app**
-
-```bash
-streamlit run main.py
-```
+- `tests/test_logic.py`: question filtering, score parsing (including format variations), score thresholds, prompt filling and error handling during streaming.
+- `tests/test_app.py`: an end-to-end chat flow using Streamlit's `AppTest`. It covers asking a question, answering, a follow-up question, a second answer and starting over.
 
 ---
 
-## 📌 Dependencies
+## Customization
 
--   streamlit
--   openai
--   langchain
--   pandas
--   python-dotenv
--   langchain_openai
--   langchain_core
--   dotenv
--   openpyxl
+| What | Where |
+|------|-------|
+| Add or edit questions | `data/devops_questions.xlsx` (columns: `Question`, `Topic`, `Level`) |
+| Change the coach's behavior or output format | `prompts/interview_coach.txt` |
+| Switch the model | `OPENAI_MODEL` in `.env` |
+| Adjust the "correct" / "partially correct" thresholds | `CORRECT_THRESHOLD` / `PARTIAL_THRESHOLD` in `devops_bot/constants.py` |
 
 ---
 
-## 🧠 Customization
+## License
 
-- Add your own DevOps questions in `data/devops_questions_full.xlsx`
-- Modify the prompt in `prompt.txt`
-- Adjust scoring rules in `logic.py`
-
----
-
-## 📜 License
-
-MIT License © 2025
+[MIT](LICENSE) © 2025 Telman Huseynli
