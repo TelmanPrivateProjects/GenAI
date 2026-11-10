@@ -1,4 +1,4 @@
-# 💻 DevOps Interview Practice Bot
+# DevOps Interview Practice Bot
 
 A **Streamlit** chat app that helps you prepare for **DevOps interviews**. It asks technical questions, evaluates your answers with an LLM (via **LangChain** + **OpenAI**), scores them from 1 to 10, shows a model answer and tracks your progress.
 
@@ -10,7 +10,7 @@ A **Streamlit** chat app that helps you prepare for **DevOps interviews**. It as
 
 ---
 
-## 🚀 Features
+## Features
 
 - **100 curated questions** across 10 topics: CI/CD, Git, Docker, Kubernetes, IaC, Configuration Management, Monitoring, Logging & Observability, DevSecOps and Cloud Platforms
 - **3 difficulty levels** (Beginner, Intermediate, Advanced) with topic filters
@@ -21,7 +21,7 @@ A **Streamlit** chat app that helps you prepare for **DevOps interviews**. It as
 
 ---
 
-## 🧭 How it works
+## How it works
 
 ```
  Sidebar: topic + level ──► generate_question() ──► question saved in session_state
@@ -37,7 +37,7 @@ A **Streamlit** chat app that helps you prepare for **DevOps interviews**. It as
 
 ---
 
-## 📁 Project structure
+## Project structure
 
 ```
 .
@@ -61,7 +61,7 @@ A **Streamlit** chat app that helps you prepare for **DevOps interviews**. It as
 
 ---
 
-## ⚙️ Setup
+## Setup
 
 1. **Create a virtual environment and install the dependencies**
 
@@ -94,7 +94,7 @@ A **Streamlit** chat app that helps you prepare for **DevOps interviews**. It as
 
 ---
 
-## 🧪 Tests
+## Tests
 
 The test suite does not call OpenAI. The LLM is replaced by a fake, so **no API key is needed**.
 
@@ -108,7 +108,7 @@ pytest
 
 ---
 
-## 🧠 Customization
+## Customization
 
 | What | Where |
 |------|-------|
@@ -119,6 +119,6 @@ pytest
 
 ---
 
-## 📜 License
+## License
 
 [MIT](LICENSE) © 2025 Telman Huseynli

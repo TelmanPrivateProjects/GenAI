@@ -8,8 +8,8 @@ from langchain_openai import ChatOpenAI
 
 from devops_bot.constants import CORRECT_THRESHOLD, DEFAULT_MODEL, PARTIAL_THRESHOLD
 
-# Matches "**🔍 Score:** 7/10" as well as small format variations the LLM may
-# produce, e.g. "**🔍 Score: 7/10**", "Score: 7 / 10" or "Score - 10/10".
+# Matches "**Score:** 7/10" as well as small format variations the LLM may
+# produce, e.g. "**Score: 7/10**", "Score: 7 / 10" or "Score - 10/10".
 SCORE_PATTERN = re.compile(r"Score\W{0,6}?(\d{1,2})\s*/\s*10", re.IGNORECASE)
 
 
@@ -63,4 +63,4 @@ def get_response(prompt_template, user_answer, current_question, llm=None):
             "user_answer": user_answer,
         })
     except Exception as e:
-        yield f"❌ Error: {str(e)}"
+        yield f"Error: {str(e)}"

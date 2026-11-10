@@ -40,11 +40,11 @@ def test_generate_question_returns_none_when_pool_exhausted(questions):
 # --- parse_score / classify_score --------------------------------------------
 
 @pytest.mark.parametrize("text, expected", [
-    ("**🔍 Score:** 7/10\n**🧠 Feedback:** ...", 7),   # format requested by the prompt
-    ("**🔍 Score: 7/10**", 7),                         # bold around the whole line
+    ("**Score:** 7/10\n**Feedback:** ...", 7),   # format requested by the prompt
+    ("**Score: 7/10**", 7),                         # bold around the whole line
     ("Score: 10 / 10", 10),                            # spaces around the slash
-    ("🔍 **Score** - 3/10", 3),
-    ("**🔍 Score:** 0/10", 0),
+    ("**Score** - 3/10", 3),
+    ("**Score:** 0/10", 0),
 ])
 def test_parse_score_accepts_format_variations(text, expected):
     assert parse_score(text) == expected
@@ -73,12 +73,12 @@ def test_get_response_fills_prompt_and_streams_reply():
 
     def fake_llm(prompt_value):
         seen_prompts.append(prompt_value.to_string())
-        return AIMessage(content="**🔍 Score:** 9/10")
+        return AIMessage(content="**Score:** 9/10")
 
     template = "Question: {current_question}\nAnswer: {user_answer}"
     reply = "".join(get_response(template, "an orchestrator", "What is Kubernetes?", llm=RunnableLambda(fake_llm)))
 
-    assert reply == "**🔍 Score:** 9/10"
+    assert reply == "**Score:** 9/10"
     assert seen_prompts == ["Human: Question: What is Kubernetes?\nAnswer: an orchestrator"]
 
 
@@ -90,13 +90,13 @@ def test_get_response_turns_mid_stream_errors_into_message():
     reply = "".join(get_response("{current_question} {user_answer}", "a", "q", llm=RunnableGenerator(failing_stream)))
 
     assert reply.startswith("partial ")
-    assert "❌ Error: invalid api key" in reply
+    assert "Error: invalid api key" in reply
 
 
 def test_get_response_without_api_key_returns_error_message(monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     reply = "".join(get_response("{current_question} {user_answer}", "a", "q"))
-    assert reply.startswith("❌ Error:")
+    assert reply.startswith("Error:")
 
 
 # --- bundled data files --------------------------------------------------------

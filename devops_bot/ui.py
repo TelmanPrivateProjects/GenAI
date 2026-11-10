@@ -15,42 +15,34 @@ QUESTIONS_DF = load_questions(QUESTIONS_PATH)
 PROMPT_TEMPLATE = load_prompt(PROMPT_PATH)
 
 FEEDBACK_LABELS = {
-    "correct": "🟢 <span style='color:green'><strong>Correct</strong></span>",
-    "partial": "🟡 <span style='color:orange'><strong>Partially Correct</strong></span>",
-    "incorrect": "🔴 <span style='color:red'><strong>Incorrect</strong></span>",
+    "correct": "<span style='color:green'><strong>Correct</strong></span>",
+    "partial": "<span style='color:orange'><strong>Partially Correct</strong></span>",
+    "incorrect": "<span style='color:red'><strong>Incorrect</strong></span>",
 }
 
 
 def render_sidebar():
     with st.sidebar:
         # --- Enhanced Performance Tracking ---
-        st.markdown("### 📊 Your Progress")
+        st.markdown("### Your Progress")
 
         correct = st.session_state.correct_count
         total = st.session_state.total_count
         accuracy = (correct / total) * 100 if total > 0 else 0
 
-        # Show emojis based on accuracy
-        if accuracy >= 80:
-            status_emoji = "🟢"
-        elif accuracy >= 40:
-            status_emoji = "🟡"
-        else:
-            status_emoji = "🔴"
-
         # Stylized box
         with st.container():
             st.markdown(f"""
             <div style='background-color:#2c2f36;padding:15px;border-radius:10px;border:1px solid #ddd'>
-                <h4 style='margin-bottom:5px;'>📈 Score Summary</h4>
+                <h4 style='margin-bottom:5px;'>Score Summary</h4>
                 <p style='margin:0'><strong>Total Answered:</strong> {total}</p>
                 <p style='margin:0'><strong>Correct Answers:</strong> {correct}</p>
-                <p style='margin:0'><strong>Accuracy:</strong> {accuracy:.1f}% {status_emoji}</p>
+                <p style='margin:0'><strong>Accuracy:</strong> {accuracy:.1f}%</p>
             </div>
             """, unsafe_allow_html=True)
 
         # Progress Bar
-        st.markdown("### 🔵 Accuracy Level")
+        st.markdown("### Accuracy Level")
         st.progress(accuracy / 100)
 
         # Show last feedback
@@ -60,22 +52,22 @@ def render_sidebar():
 
         st.markdown("---")
 
-        st.markdown("### ⚙️ Customize Practice")
-        selected_topics = st.multiselect("🧠 Topic Filter", sorted(QUESTIONS_DF["Topic"].unique().tolist()))
-        selected_level = st.selectbox("🎯 Difficulty Level", ["Beginner", "Intermediate", "Advanced"])
+        st.markdown("### Customize Practice")
+        selected_topics = st.multiselect("Topic Filter", sorted(QUESTIONS_DF["Topic"].unique().tolist()))
+        selected_level = st.selectbox("Difficulty Level", ["Beginner", "Intermediate", "Advanced"])
 
-        if st.button("🔄 Start Over", width="stretch"):
+        if st.button("Start Over", width="stretch"):
             reset_all()
             st.session_state.chat_history = [AIMessage(content=WELCOME_MESSAGE)]
             st.rerun()
 
-        if st.button("🔁 Refresh Questions", width="stretch"):
+        if st.button("Refresh Questions", width="stretch"):
             st.session_state.asked_questions.clear()
-            st.success("✅ Question pool has been reset!")
+            st.success("Question pool has been reset!")
 
         st.markdown("---")
 
-        if st.button("❓ New Question", width="stretch"):
+        if st.button("New Question", width="stretch"):
             question = generate_question(
                 df=QUESTIONS_DF,
                 asked=st.session_state.asked_questions,
@@ -84,13 +76,13 @@ def render_sidebar():
             )
             if question is None:
                 st.session_state.chat_history.append(
-                    AIMessage(content="🚫 No more unique questions available for the selected filters."))
+                    AIMessage(content="No more unique questions available for the selected filters."))
             else:
                 st.session_state.asked_questions.add(question)
                 # Track the active question explicitly instead of re-parsing it from the chat history
                 st.session_state.current_question = question
                 st.session_state.chat_history.append(
-                    AIMessage(content=f"💡 Here’s your next question:\n\n**{question}**"))
+                    AIMessage(content=f"Here’s your next question:\n\n**{question}**"))
 
 
 def render_chat():
@@ -105,7 +97,7 @@ def handle_user_input():
         return
 
     if not user_query.strip():
-        st.warning("⚠️ Please enter a non-empty answer.")
+        st.warning("Please enter a non-empty answer.")
         return
 
     # Add human message

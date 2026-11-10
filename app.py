@@ -11,12 +11,12 @@ from devops_bot.ui import handle_user_input, render_chat, render_sidebar
 load_dotenv(PROJECT_ROOT / ".env")
 
 # App config
-st.set_page_config(page_title="DevOps Interview", page_icon="💻")
-st.title("💻 DevOps Interview Practice Bot")
+st.set_page_config(page_title="DevOps Interview")
+st.title("DevOps Interview Practice Bot")
 
 if not os.getenv("OPENAI_API_KEY"):
     st.warning(
-        "⚠️ `OPENAI_API_KEY` is not set. Copy `.env.example` to `.env` and add your key "
+        "`OPENAI_API_KEY` is not set. Copy `.env.example` to `.env` and add your key "
         "to get AI feedback on your answers."
     )
 

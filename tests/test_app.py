@@ -50,7 +50,7 @@ def test_full_interview_flow(fake_llm):
     assert question and question in at.chat_message[-1].markdown[0].value
 
     # 2. Answer it -> scored evaluation
-    replies.append("**🔍 Score:** 9/10\n**🧠 Feedback:** Great.\n**✅ Model Answer:** ...")
+    replies.append("**Score:** 9/10\n**Feedback:** Great.\n**Model Answer:** ...")
     at.chat_input[0].set_value("My answer").run()
     assert question_context(prompts[-1]) == question
     assert at.session_state["total_count"] == 1
@@ -65,7 +65,7 @@ def test_full_interview_flow(fake_llm):
     assert "Score: 9/10" in at.session_state["last_feedback"]  # previous evaluation kept
 
     # 4. A partially correct answer in a slightly different score format
-    replies.append("**🔍 Score: 5/10**\n**🧠 Feedback:** Missing details.")
+    replies.append("**Score: 5/10**\n**Feedback:** Missing details.")
     at.chat_input[0].set_value("Another answer").run()
     assert at.session_state["total_count"] == 2
     assert at.session_state["correct_count"] == 1
